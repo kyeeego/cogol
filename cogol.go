@@ -2,10 +2,20 @@ package cogol
 
 import (
 	"sync"
+	"testing"
 )
 
-// group is a struct that represents a group of tests
-type group struct {
+type Cogol struct {
+	t        *testing.T
+	children []*G
+}
+
+func Init(t *testing.T) *Cogol {
+	return &Cogol{t, []*G{}}
+}
+
+// G is a struct that represents a group of tests
+type G struct {
 	name       string
 	children   []*Test
 	todo       []string
@@ -13,19 +23,30 @@ type group struct {
 	beforeAll  Handler
 	afterEach  Handler
 	afterAll   Handler
+	t          *testing.T
 }
 
-// Group is a function that creates a new group (group instance)
-func Group(name string) *group {
-	return &group{
+// Group is a function that creates a new group (G instance)
+func (cgl *Cogol) Group(name string) *G {
+	g := &G{
 		name: name,
+		t:    cgl.t,
+	}
+	cgl.children = append(cgl.children, g)
+
+	return g
+}
+
+func (cgl *Cogol) Process() {
+	for _, g := range cgl.children {
+		g.process()
 	}
 }
 
 // T indicates a typical testcase
-func (g *group) T(name string, handler Handler) {
+func (g *G) T(name string, handler Handler) {
 	t := &Test{
-		name:    name,
+		name: name,
 		handler: func(c *Context) {
 			handler(c)
 			c.succeeded <- true
@@ -35,17 +56,17 @@ func (g *group) T(name string, handler Handler) {
 	g.children = append(g.children, t)
 }
 
-func (g *group) TODO(name string) {
+func (g *G) TODO(name string) {
 	g.todo = append(g.todo, name)
 }
 
-// Process runs all the tests in group
-func (g *group) Process() {
+// process runs all the tests in group
+func (g *G) process() {
 	var wg sync.WaitGroup
 
 	for _, testCase := range g.children {
 		wg.Add(1)
-		c := New(testCase)
+		c := newContext(testCase)
 
 		go func(test *Test, wg *sync.WaitGroup) {
 			defer wg.Done()
@@ -54,18 +75,15 @@ func (g *group) Process() {
 
 			select {
 			case <-c.succeeded:
-				reportSuccess(c)
-				return
+				test.success = true
+
 			case <-c.failed:
-				reportFail(c)
-				return
+				test.success = false
 			}
 
 		}(testCase, &wg)
 	}
 	wg.Wait()
 
-	for _, todo := range g.todo {
-		reportTodo(todo)
-	}
+	reportGroup(g)
 }

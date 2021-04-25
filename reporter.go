@@ -3,6 +3,7 @@ package cogol
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"testing"
 )
 
 const (
@@ -11,13 +12,30 @@ const (
 	pencil = "✎"
 )
 
-func reportSuccess(ctx *Context) {
-	c := color.HiGreenString("    %v PASS: %v\n", tick, ctx.test.name)
-	fmt.Print(c)
+func reportGroup(g *G) {
+	text := color.HiWhiteString("Reporting group \"%v\":\n", g.name)
+	fmt.Print(text)
+
+	for _, test := range g.children {
+		report(test, g.t)
+	}
+
+	for _, todo := range g.todo {
+		reportTodo(todo)
+	}
+	fmt.Println()
 }
 
-func reportFail(ctx *Context) {
-	c := color.HiRedString("    %v FAIL: %v\n", cross, ctx.test.name)
+func report(test *Test, t *testing.T) {
+	var c string
+
+	if test.success {
+		c = color.HiGreenString("    %v PASS: %v\n", tick, test.name)
+	} else {
+		c = color.HiRedString("    %v FAIL: %v\n", cross, test.name)
+		t.Fail()
+	}
+
 	fmt.Print(c)
 }
 

@@ -1,8 +1,6 @@
 package cogol
 
-import (
-	"fmt"
-)
+import "fmt"
 
 const (
 	KILLED = true
@@ -14,7 +12,7 @@ type Context struct {
 	failed    chan string
 }
 
-func New(test *Test) *Context {
+func newContext(test *Test) *Context {
 	return &Context{
 		test:      test,
 		succeeded: make(chan bool),
@@ -24,4 +22,5 @@ func New(test *Test) *Context {
 
 func (ctx *Context) Kill() {
 	ctx.failed <- fmt.Sprintf("Killed '%v'", ctx.test.name)
+	//ctx.success = false
 }

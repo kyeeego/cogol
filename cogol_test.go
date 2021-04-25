@@ -8,7 +8,9 @@ import (
 
 // real example of usage
 func TestG_Process(t *testing.T) {
-	g := cogol.Group("Main")
+	cgl := cogol.Init(t)
+
+	g := cgl.Group("Main")
 	{
 		g.T("This one works", func(c *cogol.Context) {
 			_ = 2 + 2
@@ -21,5 +23,16 @@ func TestG_Process(t *testing.T) {
 		})
 	}
 
-	g.Process()
+	g2 := cgl.Group("Second")
+	{
+		g2.T("SHOuld work fs", func(c *cogol.Context) {
+
+		})
+
+		g2.T("Should work as well", func(c *cogol.Context) {
+
+		})
+	}
+
+	cgl.Process()
 }

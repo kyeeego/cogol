@@ -7,20 +7,22 @@ import (
 )
 
 func TestSomething(t *testing.T) {
-	g := cogol.Group("So these tests test something")
+	cgl := cogol.Init(t)
+	
+	g := cgl.Group("So these tests test something")
 	{
 		g.BeforeEach(func() {
 			// Prepare stuff before each suite
 		})
 
-		g.T("2 + 2 should be 4", func() {
-			cogol.Expect(add(2, 2)).ToBe(4)
+		g.T("2 + 2 should be 4", func(c *cogol.Context) {
+			cgl.Expect(add(2, 2)).ToBe(4)
 		})
 
-		g.T("Do some dangerous operation", func() {
+		g.T("Do some dangerous operation", func(c *cogol.Context) {
 			res, err := someDangerousOp()
-			cogol.Expect(err).ToBeNil()
-			cogol.Expect(res.Foo).ToBe("Bar")
+			cgl.Expect(err).ToBeNil()
+			cgl.Expect(res.Foo).ToBe("Bar")
 		})
 
 		g.TODO("Implement something later")
@@ -30,6 +32,6 @@ func TestSomething(t *testing.T) {
 		})
 	}
 
-	g.Process()
+	cgl.Process()
 }
 ```
