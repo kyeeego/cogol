@@ -1,6 +1,9 @@
 package cogol
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 const (
 	KILLED = true
@@ -8,15 +11,17 @@ const (
 
 type Context struct {
 	test      *Test
+	t         *testing.T
 	succeeded chan bool
 	failed    chan string
 }
 
-func newContext(test *Test) *Context {
+func (cgl Cogol) Context(test *Test) *Context {
 	return &Context{
 		test:      test,
 		succeeded: make(chan bool),
 		failed:    make(chan string),
+		t:         cgl.t,
 	}
 }
 

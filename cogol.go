@@ -40,7 +40,7 @@ func (cgl *Cogol) Group(name string) *G {
 
 func (cgl *Cogol) Process() {
 	for _, g := range cgl.children {
-		g.process()
+		cgl.processGroup(g)
 		cgl.reporter.Group(g)
 	}
 }
@@ -63,12 +63,12 @@ func (g *G) TODO(name string) {
 }
 
 // process runs all the tests in group
-func (g *G) process() {
+func (cgl *Cogol) processGroup(g *G) {
 	var wg sync.WaitGroup
 
 	for _, testCase := range g.children {
 		wg.Add(1)
-		c := newContext(testCase)
+		c := cgl.Context(testCase)
 
 		go func(test *Test, wg *sync.WaitGroup) {
 			defer wg.Done()
