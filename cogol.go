@@ -8,10 +8,11 @@ import (
 type Cogol struct {
 	t        *testing.T
 	children []*G
+	reporter Reporter
 }
 
 func Init(t *testing.T) *Cogol {
-	return &Cogol{t, []*G{}}
+	return &Cogol{t, []*G{}, DefaultReporter{}}
 }
 
 // G is a struct that represents a group of tests
@@ -19,10 +20,10 @@ type G struct {
 	name       string
 	children   []*Test
 	todo       []string
-	beforeEach Handler
-	beforeAll  Handler
-	afterEach  Handler
-	afterAll   Handler
+	beforeEach func()
+	beforeAll  func()
+	afterEach  func()
+	afterAll   func()
 	t          *testing.T
 }
 
@@ -40,6 +41,7 @@ func (cgl *Cogol) Group(name string) *G {
 func (cgl *Cogol) Process() {
 	for _, g := range cgl.children {
 		g.process()
+		cgl.reporter.Group(g)
 	}
 }
 
@@ -84,6 +86,4 @@ func (g *G) process() {
 		}(testCase, &wg)
 	}
 	wg.Wait()
-
-	reportGroup(g)
 }

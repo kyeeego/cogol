@@ -12,21 +12,29 @@ const (
 	pencil = "✎"
 )
 
-func reportGroup(g *G) {
+type Reporter interface {
+	Group(g *G)
+	Report(test *Test, t *testing.T)
+	Todo(todo string)
+}
+
+type DefaultReporter struct {}
+
+func (r DefaultReporter) Group(g *G) {
 	text := color.HiWhiteString("Reporting group \"%v\":\n", g.name)
 	fmt.Print(text)
 
 	for _, test := range g.children {
-		report(test, g.t)
+		r.Report(test, g.t)
 	}
 
 	for _, todo := range g.todo {
-		reportTodo(todo)
+		r.Todo(todo)
 	}
 	fmt.Println()
 }
 
-func report(test *Test, t *testing.T) {
+func (DefaultReporter) Report(test *Test, t *testing.T) {
 	var c string
 
 	if test.success {
@@ -39,7 +47,7 @@ func report(test *Test, t *testing.T) {
 	fmt.Print(c)
 }
 
-func reportTodo(name string) {
+func (DefaultReporter) Todo(name string) {
 	c := color.HiMagentaString("    %v TODO: %v\n", pencil, name)
 	fmt.Print(c)
 }

@@ -16,13 +16,13 @@ func TestSomething(t *testing.T) {
 		})
 
 		g.T("2 + 2 should be 4", func(c *cogol.Context) {
-			cgl.Expect(add(2, 2)).ToBe(4)
+			cgl.Assert(t).Expect(2 + 2).ToBe(4)
 		})
 
 		g.T("Do some dangerous operation", func(c *cogol.Context) {
 			res, err := someDangerousOp()
-			cgl.Expect(err).ToBeNil()
-			cgl.Expect(res.Foo).ToBe("Bar")
+			cgl.Assert(t).Expect(err).ToBeNil()
+			cgl.Assert(t).Expect(res.Foo).ToBe("Bar")
 		})
 
 		g.TODO("Implement something later")
