@@ -16,7 +16,7 @@ func TestSomething(t *testing.T) {
 		})
 
 		g.T("2 + 2 should be 4", func(c *cogol.Context) {
-			cgl.Expect(2 + 2).ToBe(4)
+			c.Expect(2 + 2).ToBe(4)
 		})
 
 		g.T("Do some dangerous operation", func(c *cogol.Context) {
