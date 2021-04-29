@@ -20,9 +20,9 @@ type G struct {
 	name       string
 	children   []*Test
 	todo       []string
-	beforeEach func()
+	beforeEach Handler
 	beforeAll  func()
-	afterEach  func()
+	afterEach  Handler
 	afterAll   func()
 	t          *testing.T
 }
@@ -30,8 +30,13 @@ type G struct {
 // Group is a function that creates a new group (G instance)
 func (cgl *Cogol) Group(name string) *G {
 	g := &G{
-		name: name,
-		t:    cgl.t,
+		name:       name,
+		t:          cgl.t,
+
+		beforeEach: func(c *Context) {},
+		afterEach:  func(c *Context) {},
+		beforeAll:  func() {},
+		afterAll:   func() {},
 	}
 	cgl.children = append(cgl.children, g)
 
@@ -62,6 +67,14 @@ func (g *G) TODO(name string) {
 	g.todo = append(g.todo, name)
 }
 
+func (g *G) BeforeEach(h Handler) {
+	g.beforeEach = h
+}
+
+func (g *G) AfterEach(h Handler) {
+	g.afterEach = h
+}
+
 // process runs all the tests in group
 func (cgl *Cogol) processGroup(g *G) {
 	var wg sync.WaitGroup
@@ -72,6 +85,9 @@ func (cgl *Cogol) processGroup(g *G) {
 
 		go func(test *Test, wg *sync.WaitGroup) {
 			defer wg.Done()
+
+			g.beforeEach(c)
+			go test.handler(c)
 
 			go test.handler(c)
 
