@@ -89,8 +89,6 @@ func (cgl *Cogol) processGroup(g *G) {
 			g.beforeEach(c)
 			go test.handler(c)
 
-			go test.handler(c)
-
 			select {
 			case <-c.succeeded:
 				test.success = true

@@ -11,7 +11,7 @@ func TestSomething(t *testing.T) {
 	
 	g := cgl.Group("So these tests test something")
 	{
-		g.BeforeEach(func() {
+		g.BeforeEach(func(c *cogol.Context) {
 			// Prepare stuff before each suite
 		})
 
@@ -27,7 +27,7 @@ func TestSomething(t *testing.T) {
 
 		g.TODO("Implement something later")
 
-		g.AfterEach(func() {
+		g.AfterEach(func(c *cogol.Context) {
 			//  Clean stuff up after each suite
 		})
 	}
