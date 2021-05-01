@@ -25,8 +25,32 @@ func (a *assertion) ToBe(expected interface{}) {
 	}
 }
 
+func (a *assertion) NotToBe(unexpected interface{}) {
+	if reflect.DeepEqual(a.actual, unexpected) {
+		a.ctx.Kill()
+	}
+}
+
 func (a *assertion) ToBeNil() {
 	if a.actual != nil {
+		a.ctx.Kill()
+	}
+}
+
+func (a *assertion) ToBeNotNil() {
+	if a.actual == nil {
+		a.ctx.Kill()
+	}
+}
+
+func (a *assertion) ToBeTrue() {
+	if !reflect.DeepEqual(a.actual, true) {
+		a.ctx.Kill()
+	}
+}
+
+func (a *assertion) ToBeFalse() {
+	if !reflect.DeepEqual(a.actual, false) {
 		a.ctx.Kill()
 	}
 }

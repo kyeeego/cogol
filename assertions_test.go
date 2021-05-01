@@ -32,6 +32,15 @@ func TestAssertion(t *testing.T) {
 		g2.T("Should fail with incorrect types", func(c *cogol.Context) {
 			c.Expect("string").ToBe(42)
 		})
+
+		g2.T("SHould be good", func(c *cogol.Context) {
+			c.Expect(true).ToBeTrue()
+			c.Expect(false).ToBeFalse()
+		})
+
+		g2.T("should die", func(c *cogol.Context) {
+			c.Expect(false).ToBeTrue()
+		})
 	}
 
 	cgl.Process()

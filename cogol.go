@@ -30,8 +30,8 @@ type G struct {
 // Group is a function that creates a new group (G instance)
 func (cgl *Cogol) Group(name string) *G {
 	g := &G{
-		name:       name,
-		t:          cgl.t,
+		name: name,
+		t:    cgl.t,
 
 		beforeEach: func(c *Context) {},
 		afterEach:  func(c *Context) {},
