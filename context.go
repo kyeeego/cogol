@@ -13,7 +13,7 @@ type Context struct {
 	failed    chan string
 }
 
-func (cgl Cogol) Context(test *Test) *Context {
+func (cgl Cogol) context(test *Test) *Context {
 	return &Context{
 		test: test,
 		Storage: &defaultStorage{

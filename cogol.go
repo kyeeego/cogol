@@ -101,7 +101,7 @@ func (cgl *Cogol) processGroup(g *G) {
 
 	for _, testCase := range g.children {
 		wg.Add(1)
-		c := cgl.Context(testCase)
+		c := cgl.context(testCase)
 
 		go func(test *Test, wg *sync.WaitGroup) {
 			defer wg.Done()

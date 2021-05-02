@@ -66,6 +66,30 @@ func TestAssertion(t *testing.T) {
 
 			verify(t, c, false)
 		})
+
+		g2.T("Zero testing", func(c *Context) {
+			a := assertion{nil, "", c, mockKiller}
+			a2 := assertion{nil, "full", c, mockKiller}
+			a.ToBeZero()
+			a2.ToBeNotZero()
+
+			verify(t, c, true)
+		})
+	}
+
+	cgl.Process()
+}
+
+func TestAssertion_Demo(t *testing.T) {
+	cgl := Init(t)
+
+	g := cgl.Group("Assertions demo")
+	{
+		g.T("Works", func(c *Context) {
+			c.Expect(2 + 2).ToBe(4)
+			c.Expect(true).ToBeTrue()
+			c.Expect("").ToBeZero()
+		})
 	}
 
 	cgl.Process()
@@ -73,6 +97,8 @@ func TestAssertion(t *testing.T) {
 
 func verify(t *testing.T, ctx *Context, shouldBeSuccessful bool) {
 	if ctx.test.success != shouldBeSuccessful {
-		t.Fail()
+		ctx.Kill()
+	} else {
+		ctx.succeeded <- true
 	}
 }
