@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	tick  = "✓"
-	cross = "✗"
+	tick   = "✓"
+	cross  = "✗"
 	pencil = "✎"
 )
 
@@ -18,11 +18,16 @@ type Reporter interface {
 	Todo(todo string)
 }
 
-type DefaultReporter struct {}
+type DefaultReporter struct{}
 
 func (r DefaultReporter) Group(g *G) {
-	text := color.HiWhiteString("Reporting group \"%v\":\n", g.name)
-	fmt.Print(text)
+	clr := color.New(color.FgBlack)
+
+	if g.success {
+		printHeader(*clr, color.BgHiGreen, fmt.Sprintf("\n%v PASS: Group \"%v\"", tick, g.name))
+	} else {
+		printHeader(*clr, color.BgHiRed, fmt.Sprintf("\n%v FAIL: Group \"%v\"", cross, g.name))
+	}
 
 	for _, test := range g.children {
 		r.Report(test, g.t)
@@ -50,4 +55,10 @@ func (DefaultReporter) Report(test *Test, t *testing.T) {
 func (DefaultReporter) Todo(name string) {
 	c := color.HiMagentaString("    %v TODO: %v\n", pencil, name)
 	fmt.Print(c)
+}
+
+func printHeader(clr color.Color, attr color.Attribute, text string) {
+	clr.Add(attr)
+	_,_ = clr.Print(text)
+	fmt.Print("\n\n")
 }
