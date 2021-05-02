@@ -25,6 +25,15 @@ type G struct {
 	afterEach  Handler
 	afterAll   func()
 	t          *testing.T
+	success    bool
+}
+
+type Handler = func(c *Context)
+
+type Test struct {
+	name    string
+	handler Handler
+	success bool
 }
 
 // Group is a function that creates a new group (G instance)
@@ -46,8 +55,19 @@ func (cgl *Cogol) Group(name string) *G {
 func (cgl *Cogol) Process() {
 	for _, g := range cgl.children {
 		cgl.processGroup(g)
+		g.calculateSuccess()
 		cgl.reporter.Group(g)
 	}
+}
+
+func (g *G) calculateSuccess() {
+	for _, test := range g.children {
+		if !test.success {
+			g.success = false
+			return
+		}
+	}
+	g.success = true
 }
 
 // T indicates a typical testcase
@@ -96,6 +116,8 @@ func (cgl *Cogol) processGroup(g *G) {
 			case <-c.failed:
 				test.success = false
 			}
+
+			g.afterEach(c)
 
 		}(testCase, &wg)
 	}
