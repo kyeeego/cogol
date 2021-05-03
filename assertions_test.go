@@ -19,7 +19,7 @@ func TestAssertion(t *testing.T) {
 			a := assertion{nil, err, c, mockKiller}
 			a.ToBeNil()
 
-			verify(t, c, false)
+			verify(c, false)
 		})
 
 		g2.T("SHOuld pass", func(c *Context) {
@@ -27,28 +27,28 @@ func TestAssertion(t *testing.T) {
 			a := assertion{nil, err, c, mockKiller}
 			a.ToBeNil()
 
-			verify(t, c, true)
+			verify(c, true)
 		})
 
 		g2.T("Should work", func(c *Context) {
 			a := assertion{nil, 2 + 2, c, mockKiller}
 			a.ToBe(4)
 
-			verify(t, c, true)
+			verify(c, true)
 		})
 
 		g2.T("Should fail with incorrect value", func(c *Context) {
 			a := assertion{nil, 2 + 2, c, mockKiller}
 			a.ToBe(5)
 
-			verify(t, c, false)
+			verify(c, false)
 		})
 
 		g2.T("Should fail with incorrect types", func(c *Context) {
 			a := assertion{nil, "string", c, mockKiller}
 			a.ToBe(42)
 
-			verify(t, c, false)
+			verify(c, false)
 		})
 
 		g2.T("SHould be good", func(c *Context) {
@@ -57,14 +57,14 @@ func TestAssertion(t *testing.T) {
 			a.ToBeTrue()
 			a2.ToBeFalse()
 
-			verify(t, c, true)
+			verify(c, true)
 		})
 
 		g2.T("should die", func(c *Context) {
 			a := assertion{nil, false, c, mockKiller}
 			a.ToBeTrue()
 
-			verify(t, c, false)
+			verify(c, false)
 		})
 
 		g2.T("Zero testing", func(c *Context) {
@@ -73,7 +73,7 @@ func TestAssertion(t *testing.T) {
 			a.ToBeZero()
 			a2.ToBeNotZero()
 
-			verify(t, c, true)
+			verify(c, true)
 		})
 	}
 
@@ -95,7 +95,7 @@ func TestAssertion_Demo(t *testing.T) {
 	cgl.Process()
 }
 
-func verify(t *testing.T, ctx *Context, shouldBeSuccessful bool) {
+func verify(ctx *Context, shouldBeSuccessful bool) {
 	if ctx.test.success != shouldBeSuccessful {
 		ctx.Kill()
 	} else {
