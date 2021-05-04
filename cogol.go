@@ -34,6 +34,7 @@ type Test struct {
 	name    string
 	handler Handler
 	success bool
+	f       *failure
 }
 
 // Group is a function that creates a new group (G instance)
@@ -115,6 +116,7 @@ func (cgl *Cogol) processGroup(g *G) {
 
 			case <-c.failed:
 				test.success = false
+				cgl.t.Fail()
 			}
 
 			g.afterEach(c)

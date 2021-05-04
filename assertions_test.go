@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func mockKiller(c *Context) {
-	c.test.success = false
+func mockKiller(f *failure) {
+	f.ctx.test.success = false
 }
 
 func TestAssertion(t *testing.T) {
@@ -89,6 +89,18 @@ func TestAssertion_Demo(t *testing.T) {
 			c.Expect(2 + 2).ToBe(4)
 			c.Expect(true).ToBeTrue()
 			c.Expect("").ToBeZero()
+		})
+
+		g.T("Example failure", func(c *Context) {
+			c.Expect(2).ToBe(3)
+		})
+
+		g.T("Example failure 2", func(c *Context) {
+			c.Expect(2).ToBe("2")
+		})
+
+		g.T("exmaple failure 3", func(c *Context) {
+			c.Expect(true).ToBeFalse()
 		})
 	}
 
