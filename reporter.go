@@ -13,14 +13,14 @@ const (
 
 type Reporter interface {
 	Group(g *G)
-	Test(test *Test)
+	Test(test *test)
 	Error(f *failure)
 	Todo(todo string)
 }
 
-type DefaultReporter struct{}
+type defaultReporter struct{}
 
-func (r DefaultReporter) Group(g *G) {
+func (r defaultReporter) Group(g *G) {
 	clr := color.New(color.FgBlack)
 
 	printHeader(*clr, g.success, g.name)
@@ -35,7 +35,7 @@ func (r DefaultReporter) Group(g *G) {
 	fmt.Println()
 }
 
-func (r DefaultReporter) Test(test *Test) {
+func (r defaultReporter) Test(test *test) {
 	if test.success {
 		c := color.HiGreenString("\t%v PASS: %v\n", tick, test.name)
 		fmt.Print(c)
@@ -46,12 +46,12 @@ func (r DefaultReporter) Test(test *Test) {
 	}
 }
 
-func (DefaultReporter) Error(f *failure) {
+func (defaultReporter) Error(f *failure) {
 	c := color.HiBlackString("\t\t%v\n\n", f.msg)
 	fmt.Print(c)
 }
 
-func (DefaultReporter) Todo(name string) {
+func (defaultReporter) Todo(name string) {
 	c := color.HiMagentaString("\t%v TODO: %v\n", pencil, name)
 	fmt.Print(c)
 }
