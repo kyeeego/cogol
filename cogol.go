@@ -12,27 +12,27 @@ type Cogol struct {
 }
 
 func Init(t *testing.T) *Cogol {
-	return &Cogol{t, []*G{}, DefaultReporter{}}
+	return &Cogol{t, []*G{}, defaultReporter{}}
 }
 
 // G is a struct that represents a group of tests
 type G struct {
 	name       string
-	children   []*Test
+	children   []*test
 	todo       []string
-	beforeEach Handler
+	beforeEach handler
 	beforeAll  func()
-	afterEach  Handler
+	afterEach  handler
 	afterAll   func()
 	t          *testing.T
 	success    bool
 }
 
-type Handler = func(c *Context)
+type handler = func(c *Context)
 
-type Test struct {
+type test struct {
 	name    string
-	handler Handler
+	handler handler
 	success bool
 	f       *failure
 }
@@ -81,8 +81,8 @@ func (g *G) calculateSuccess() {
 }
 
 // T indicates a typical testcase
-func (g *G) T(name string, handler Handler) {
-	t := &Test{
+func (g *G) T(name string, handler handler) {
+	t := &test{
 		name: name,
 		handler: func(c *Context) {
 			handler(c)
@@ -97,11 +97,11 @@ func (g *G) TODO(name string) {
 	g.todo = append(g.todo, name)
 }
 
-func (g *G) BeforeEach(h Handler) {
+func (g *G) BeforeEach(h handler) {
 	g.beforeEach = h
 }
 
-func (g *G) AfterEach(h Handler) {
+func (g *G) AfterEach(h handler) {
 	g.afterEach = h
 }
 
@@ -113,7 +113,7 @@ func (cgl *Cogol) processGroup(g *G) {
 		wg.Add(1)
 		c := cgl.context(testCase)
 
-		go func(test *Test, wg *sync.WaitGroup) {
+		go func(test *test, wg *sync.WaitGroup) {
 			defer wg.Done()
 
 			g.beforeEach(c)

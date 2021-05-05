@@ -7,13 +7,13 @@ import (
 
 type Context struct {
 	Storage   storage
-	test      *Test
+	test      *test
 	t         *testing.T
 	succeeded chan bool
 	failed    chan string
 }
 
-func (cgl Cogol) context(test *Test) *Context {
+func (cgl Cogol) context(test *test) *Context {
 	return &Context{
 		test: test,
 		Storage: &defaultStorage{
