@@ -54,11 +54,20 @@ func (cgl *Cogol) Group(name string) *G {
 }
 
 func (cgl *Cogol) Process() {
+	var wg sync.WaitGroup
+
 	for _, g := range cgl.children {
-		cgl.processGroup(g)
-		g.calculateSuccess()
-		cgl.reporter.Group(g)
+		wg.Add(1)
+		go func(wg *sync.WaitGroup, g *G) {
+			defer wg.Done()
+
+			cgl.processGroup(g)
+			g.calculateSuccess()
+			cgl.reporter.Group(g)
+		}(&wg, g)
+
 	}
+	wg.Wait()
 }
 
 func (g *G) calculateSuccess() {

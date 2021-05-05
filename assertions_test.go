@@ -80,21 +80,6 @@ func TestAssertion(t *testing.T) {
 	cgl.Process()
 }
 
-func TestAssertion_Demo(t *testing.T) {
-	cgl := Init(t)
-
-	g := cgl.Group("Assertions demo")
-	{
-		g.T("Works", func(c *Context) {
-			c.Expect(2 + 2).ToBe(4)
-			c.Expect(true).ToBeTrue()
-			c.Expect("").ToBeZero()
-		})
-	}
-
-	cgl.Process()
-}
-
 func verify(ctx *Context, shouldBeSuccessful bool) {
 	if ctx.test.success != shouldBeSuccessful {
 		ctx.Kill()
