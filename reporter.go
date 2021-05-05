@@ -23,11 +23,7 @@ type DefaultReporter struct{}
 func (r DefaultReporter) Group(g *G) {
 	clr := color.New(color.FgBlack)
 
-	if g.success {
-		printHeader(*clr, color.BgHiGreen, fmt.Sprintf("\n%v PASS: Group \"%v\"", tick, g.name))
-	} else {
-		printHeader(*clr, color.BgHiRed, fmt.Sprintf("\n%v FAIL: Group \"%v\"", cross, g.name))
-	}
+	printHeader(*clr, g.success, g.name)
 
 	for _, test := range g.children {
 		r.Test(test)
@@ -60,8 +56,13 @@ func (DefaultReporter) Todo(name string) {
 	fmt.Print(c)
 }
 
-func printHeader(clr color.Color, attr color.Attribute, text string) {
-	clr.Add(attr)
-	_, _ = clr.Print(text)
-	fmt.Print("\n\n")
+func printHeader(clr color.Color, success bool, text string) {
+	if success {
+		clr.Add(color.BgHiGreen)
+		_, _ = clr.Printf(" %v PASS ", tick)
+	} else {
+		clr.Add(color.BgHiRed)
+		_, _ = clr.Printf(" %v FAIL ", cross)
+	}
+	fmt.Printf(" %v\n\n", text)
 }
