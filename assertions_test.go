@@ -83,7 +83,5 @@ func TestAssertion(t *testing.T) {
 func verify(ctx *Context, shouldBeSuccessful bool) {
 	if ctx.test.success != shouldBeSuccessful {
 		ctx.Kill()
-	} else {
-		ctx.succeeded <- true
 	}
 }

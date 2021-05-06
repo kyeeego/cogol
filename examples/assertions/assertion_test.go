@@ -12,6 +12,9 @@ func Test(t *testing.T) {
 	g := cgl.Group("Assertions example")
 	{
 		g.T("Successfully adds two numbers", func(c *cogol.Context) {
+			// Create an assertion by running Context.Expect method.
+			// Follow it with one of the assertion checkers, more of which you'll
+			// see in the following tests
 			c.Expect(42 + 24).ToBe(66)
 		})
 
