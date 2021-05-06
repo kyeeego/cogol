@@ -36,6 +36,15 @@ func defaultKiller(f *failure) {
 
 func (a *assertion) ToBe(expected interface{}) {
 	a.expected = expected
+	if a.actual == nil {
+		a.kill(a.Fail(
+			fmt.Sprintf(failureMsg,
+				a.expected, "nil",
+			)),
+		)
+		return
+	}
+
 	if reflect.TypeOf(a.expected) != reflect.TypeOf(a.actual) {
 		a.kill(a.Fail(
 			fmt.Sprintf(failureMsg,
@@ -54,7 +63,7 @@ func (a *assertion) ToBe(expected interface{}) {
 	a.ctx.test.success = true
 }
 
-func (a *assertion) NotToBe(unexpected interface{}) {
+func (a *assertion) ToBeNot(unexpected interface{}) {
 	if reflect.DeepEqual(a.actual, unexpected) {
 		a.kill(a.Fail(
 			fmt.Sprintf("Expected %v to be not %v", a.actual, unexpected),
