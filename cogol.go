@@ -55,6 +55,7 @@ func (cgl *Cogol) Group(name string) *G {
 
 func (cgl *Cogol) Process() {
 	var wg sync.WaitGroup
+	mu := &sync.Mutex{}
 
 	for _, g := range cgl.children {
 		wg.Add(1)
@@ -63,7 +64,12 @@ func (cgl *Cogol) Process() {
 
 			cgl.processGroup(g)
 			g.calculateSuccess()
+
+			// Locking IO so group reports in a single cogol.Cogol instance won't
+			// be reported at the same time resulting in a compleete mess
+			mu.Lock()
 			cgl.reporter.Group(g)
+			mu.Unlock()
 		}(&wg, g)
 
 	}
