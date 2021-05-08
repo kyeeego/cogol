@@ -9,7 +9,7 @@
 
 # Why Cogol?
 
-Cogol is a beautiful, ```Jest```-like, easy-configurable tool for writing unit-tests in ```Go``` programming language.
+Cogol is a beautiful, easy-configurable tool for writing unit-tests in ```Go``` programming language.
 
 # Getting started
 

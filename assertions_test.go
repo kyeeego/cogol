@@ -2,6 +2,7 @@ package cogol
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -82,6 +83,9 @@ func TestAssertion(t *testing.T) {
 
 func verify(ctx *Context, shouldBeSuccessful bool) {
 	if ctx.test.success != shouldBeSuccessful {
-		ctx.Kill()
+		ctx.Kill(&failure{
+			ctx: ctx,
+			msg: fmt.Sprintf("Test successfullness was supposed to be %v", shouldBeSuccessful),
+		})
 	}
 }
