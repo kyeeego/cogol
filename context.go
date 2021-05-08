@@ -25,7 +25,8 @@ func (cgl Cogol) context(test *test) *Context {
 	}
 }
 
-func (ctx *Context) Kill() {
+func (ctx *Context) Kill(f *failure) {
+	ctx.test.f = f
 	ctx.failed <- fmt.Sprintf("Killed '%v'", ctx.test.name)
 }
 
