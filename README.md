@@ -3,7 +3,7 @@
 [![Go Reportcard](https://goreportcard.com/badge/github.com/kyeeego/cogol)](https://goreportcard.com/report/github.com/kyeeego/cogol)
 [![License](https://img.shields.io/github/license/kyeeego/cogol.svg)](https://github.com/kyeeego/cogol/blob/master/LICENSE.md)
 [![Release](https://img.shields.io/github/release/kyeeego/cogol.svg)](https://github.com/kyeeego/cogol/releases/latest)
-
+[![Build](https://github.com/kyeeego/cogol/actions/workflows/cogol.yml/badge.svg)](https://github.com/kyeeego/cogol/actions/workflows/cogol.yml/badge.svg)
 ![Cogol](./assets/cogol-logo.png)
 
 # Why Cogol?
