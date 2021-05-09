@@ -113,6 +113,25 @@ func TestContext_Kill(t *testing.T) {
 				msg: "If it failed, then the test is passing",
 			})
 		})
+
+		g.T("ctx.Kill() calls after the first one should be ignored", func(c *Context) {
+			c.Kill(&failure{
+				ctx: c,
+				msg: "If it failed, then the test is passing",
+			})
+
+			c.Kill(&failure{
+				ctx: c,
+				msg: "Should not appear",
+			})
+		})
+
+		g.AfterEach(func(c *Context) {
+			c.Kill(&failure{
+				ctx: c,
+				msg: "Fuck",
+			})
+		})
 	}
 
 	cgl.Process()

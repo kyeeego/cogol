@@ -6,11 +6,12 @@ import (
 )
 
 type Context struct {
-	Storage   storage
-	test      *test
-	t         *testing.T
-	succeeded chan bool
-	failed    chan string
+	Storage     storage
+	test        *test
+	t           *testing.T
+	succeeded   chan bool
+	failed      chan string
+	killedTimes int
 }
 
 func (cgl Cogol) context(test *test) *Context {
@@ -22,12 +23,19 @@ func (cgl Cogol) context(test *test) *Context {
 		succeeded: make(chan bool),
 		failed:    make(chan string),
 		t:         cgl.t,
+		killedTimes: 0,
 	}
 }
 
 func (ctx *Context) Kill(f *failure) {
+	// Can not kill context more than once, so if ctx.Kill() has been called
+	// more than once, we can just ingnore it 'cause test's failed anyway
+	if ctx.killedTimes >= 1 {
+		return
+	}
 	ctx.test.f = f
 	ctx.failed <- fmt.Sprintf("Killed '%v'", ctx.test.name)
+	ctx.killedTimes++
 }
 
 type storage interface {
