@@ -6,36 +6,40 @@ import (
 )
 
 type Context struct {
-	Storage     storage
-	test        *test
-	t           *testing.T
-	succeeded   chan bool
-	failed      chan string
-	killedTimes int
+	Storage   storage
+	Logger    logger
+	test      *test
+	t         *testing.T
+	succeeded chan bool
+	failed    chan string
+	killed    bool
 }
 
+// context creates a new cgl.Context instance
 func (cgl Cogol) context(test *test) *Context {
 	return &Context{
 		test: test,
 		Storage: &defaultStorage{
 			data: make(map[string]interface{}),
 		},
+		Logger:    newDefaultLogger(test),
 		succeeded: make(chan bool),
 		failed:    make(chan string),
 		t:         cgl.t,
-		killedTimes: 0,
+		killed:    false,
 	}
 }
 
+// Kill marks test as failed and stops test's processing
 func (ctx *Context) Kill(f *failure) {
 	// Can not kill context more than once, so if ctx.Kill() has been called
 	// more than once, we can just ingnore it 'cause test's failed anyway
-	if ctx.killedTimes >= 1 {
+	if ctx.killed {
 		return
 	}
 	ctx.test.f = f
 	ctx.failed <- fmt.Sprintf("Killed '%v'", ctx.test.name)
-	ctx.killedTimes++
+	ctx.killed = true
 }
 
 type storage interface {

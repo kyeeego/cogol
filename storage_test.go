@@ -1,6 +1,8 @@
 package cogol
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestStorage(t *testing.T) {
 	cgl := Init(t)
@@ -25,10 +27,12 @@ func TestStorage(t *testing.T) {
 
 		g.T("should be accessible because of beforeeach", func(c *Context) {
 			c.Expect(c.Storage.Get(bepropname)).ToBe(727)
+			c.Logger.Info("should be accessible because of beforeeach")
 		})
 
 		g.T("here as well", func(c *Context) {
 			c.Expect(c.Storage.Get(bepropname)).ToBe(727)
+			c.Logger.Info("here as well")
 		})
 
 		g.T("propname should be overridden", func(c *Context) {

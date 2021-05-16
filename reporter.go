@@ -14,8 +14,9 @@ const (
 type Reporter interface {
 	Group(g *G)
 	Test(test *test)
-	Error(f *failure)
 	Todo(todo string)
+	Error(f *failure)
+	Print(format string, values ...interface{})
 }
 
 type defaultReporter struct{}
@@ -27,6 +28,9 @@ func (r defaultReporter) Group(g *G) {
 
 	for _, test := range g.children {
 		r.Test(test)
+		if test.logs != "" {
+			r.Print(test.logs)
+		}
 	}
 
 	for _, todo := range g.todo {
@@ -54,6 +58,10 @@ func (defaultReporter) Error(f *failure) {
 func (defaultReporter) Todo(name string) {
 	c := color.HiMagentaString("\t%v TODO: %v\n", pencil, name)
 	fmt.Print(c)
+}
+
+func (defaultReporter) Print(format string, values ...interface{}) {
+	color.Yellow(format, values...)
 }
 
 func printHeader(clr color.Color, success bool, text string) {

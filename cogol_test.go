@@ -108,6 +108,7 @@ func TestContext_Kill(t *testing.T) {
 	g := cgl.Group("Context kill testing")
 	{
 		g.T("Context.Kill should fail the test immediately", func(c *Context) {
+			c.Logger.Infof("%v killed", c.test.name)
 			c.Kill(&failure{
 				ctx: c,
 				msg: "If it failed, then the test is passing",
