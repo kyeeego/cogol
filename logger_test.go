@@ -15,11 +15,13 @@ func TestLogger(t *testing.T) {
 			c.Logger.Infof("%v world", "hello")
 
 			c.Expect(c.test.logs).ToBe(
-				fmt.Sprintf(
-					"%v %v",
-					color.HiBlueString("\t\tINFO"),
-					"hello world\n\n",
-				),
+				[]string{
+					fmt.Sprintf(
+						"%v %v",
+						color.HiBlueString("\t\tINFO"),
+						"hello world\n\n",
+					),
+				},
 			)
 		})
 
