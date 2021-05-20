@@ -28,8 +28,10 @@ func (r defaultReporter) Group(g *G) {
 
 	for _, test := range g.children {
 		r.Test(test)
-		if test.logs != "" {
-			r.Print(test.logs)
+		if len(test.logs) != 0 {
+			for _, l := range test.logs {
+				r.Print(l)
+			}
 		}
 	}
 

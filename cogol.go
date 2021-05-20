@@ -37,7 +37,7 @@ type test struct {
 	handler handler
 	success bool
 	f       *failure
-	logs    string
+	logs    []string
 }
 
 // Group is a function that creates a new group (G instance)
@@ -106,7 +106,7 @@ func (g *G) T(name string, handler handler) {
 			handler(c)
 			c.succeeded <- true
 		},
-		logs: "",
+		logs: []string{},
 	}
 
 	g.children = append(g.children, t)
