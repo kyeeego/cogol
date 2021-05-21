@@ -71,8 +71,8 @@ func Test2(t *testing.T) {
 			mu.Unlock()
 		})
 
-		g.T("do stuff", func(c *Context) {})
-		g.T("do stuff 2", func(c *Context) {})
+		g.T("run 1", func(c *Context) {})
+		g.T("run 2", func(c *Context) {})
 		g.T("BeforeEach should be ran 3 times", func(c *Context) {})
 	}
 
@@ -90,7 +90,7 @@ func Test2(t *testing.T) {
 			c.Storage.Set(old, 4444)
 		})
 
-		g2.T("Should be 4444", func(c *Context) {
+		g2.T("Should be overridden with 4444", func(c *Context) {
 			c.Expect(c.Storage.Get(old)).ToBe(4444)
 		})
 	}
@@ -108,7 +108,6 @@ func TestContext_Kill(t *testing.T) {
 	g := cgl.Group("Context kill testing")
 	{
 		g.T("Context.Kill should fail the test immediately", func(c *Context) {
-			c.Logger.Infof("%v killed", c.test.name)
 			c.Kill(&failure{
 				ctx: c,
 				msg: "If it failed, then the test is passing",

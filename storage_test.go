@@ -17,11 +17,11 @@ func TestStorage(t *testing.T) {
 			c.Storage.Set(bepropname, 727)
 		})
 
-		g.T("Should not be accessible from other tests", func(c *Context) {
+		g.T("'propname' should not be accessible from other tests", func(c *Context) {
 			c.Storage.Set(propname, 42)
 		})
 
-		g.T("Test 2", func(c *Context) {
+		g.T("'propname' should not be accessible from here", func(c *Context) {
 			c.Expect(c.Storage.Get(propname)).ToBeNil()
 		})
 

@@ -13,9 +13,9 @@ func mockKiller(f *failure) {
 func TestAssertion(t *testing.T) {
 	cgl := Init(t)
 
-	g2 := cgl.Group("Assertions")
+	g := cgl.Group("Assertions")
 	{
-		g2.T("SHOuld fail because err != nil", func(c *Context) {
+		g.T("SHOuld fail because err != nil", func(c *Context) {
 			err := errors.New("cum")
 			a := assertion{nil, err, c, mockKiller}
 			a.ToBeNil()
@@ -23,7 +23,7 @@ func TestAssertion(t *testing.T) {
 			verify(c, false)
 		})
 
-		g2.T("SHOuld pass", func(c *Context) {
+		g.T("SHOuld pass", func(c *Context) {
 			var err error
 			a := assertion{nil, err, c, mockKiller}
 			a.ToBeNil()
@@ -31,28 +31,28 @@ func TestAssertion(t *testing.T) {
 			verify(c, true)
 		})
 
-		g2.T("Should work", func(c *Context) {
+		g.T("Should work", func(c *Context) {
 			a := assertion{nil, 2 + 2, c, mockKiller}
 			a.ToBe(4)
 
 			verify(c, true)
 		})
 
-		g2.T("Should fail with incorrect value", func(c *Context) {
+		g.T("Should fail with incorrect value", func(c *Context) {
 			a := assertion{nil, 2 + 2, c, mockKiller}
 			a.ToBe(5)
 
 			verify(c, false)
 		})
 
-		g2.T("Should fail with incorrect types", func(c *Context) {
+		g.T("Should fail with incorrect types", func(c *Context) {
 			a := assertion{nil, "string", c, mockKiller}
 			a.ToBe(42)
 
 			verify(c, false)
 		})
 
-		g2.T("SHould be good", func(c *Context) {
+		g.T("SHould be good", func(c *Context) {
 			a := assertion{nil, true, c, mockKiller}
 			a2 := assertion{nil, false, c, mockKiller}
 			a.ToBeTrue()
@@ -61,14 +61,14 @@ func TestAssertion(t *testing.T) {
 			verify(c, true)
 		})
 
-		g2.T("should die", func(c *Context) {
+		g.T("should die", func(c *Context) {
 			a := assertion{nil, false, c, mockKiller}
 			a.ToBeTrue()
 
 			verify(c, false)
 		})
 
-		g2.T("Zero testing", func(c *Context) {
+		g.T("Zero testing", func(c *Context) {
 			a := assertion{nil, "", c, mockKiller}
 			a2 := assertion{nil, "full", c, mockKiller}
 			a.ToBeZero()
