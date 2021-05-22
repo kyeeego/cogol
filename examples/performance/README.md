@@ -11,7 +11,7 @@ execution time was around ```6.001s``` *(Because we've been sleeping for 2 and 4
 
 Instead, you should create all the groups in a single function, under a single ```cogol.Cogol``` instance
 *(what's shown in ```Demo 2```)*. All the ```cogol``` groups that are binded to one ```cogol.Cogol```
-instance will be run in parallel, highly improving speed of the tests we've wrote in ```Demo 1```. Execution time
+instance will be run in parallel, highly improving speed of the tests we've written in ```Demo 1```. Execution time
 of ```Demo 2``` code will be around ```4.001s``` *(The longest operation in tests takes exactly 4 seconds)*
 
 #### Demo 1

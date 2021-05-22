@@ -6,13 +6,17 @@ import (
 	"testing"
 )
 
-func TestLogger(t *testing.T) {
+func TestDefaultLogger(t *testing.T) {
 	cgl := Init(t)
 
 	g := cgl.Group("Logger")
 	{
+		g.BeforeEach(func(c *Context) {
+			c.Expect(c.Log()).ToBeNotNil()
+		})
+
 		g.T("Info", func(c *Context) {
-			c.Logger.Info("hello world")
+			c.Log().Info("hello world")
 
 			c.Expect(c.test.logs).ToBe(
 				[]string{
@@ -26,7 +30,7 @@ func TestLogger(t *testing.T) {
 		})
 
 		g.T("Infof", func(c *Context) {
-			c.Logger.Infof("%v world", "hello")
+			c.Log().Infof("%v world", "hello")
 
 			c.Expect(c.test.logs).ToBe(
 				[]string{
@@ -40,7 +44,7 @@ func TestLogger(t *testing.T) {
 		})
 
 		g.T("Error", func(c *Context) {
-			c.Logger.Error("hello world")
+			c.Log().Error("hello world")
 
 			c.Expect(c.test.logs).ToBe(
 				[]string{
@@ -54,7 +58,7 @@ func TestLogger(t *testing.T) {
 		})
 
 		g.T("Errorf", func(c *Context) {
-			c.Logger.Errorf("%v world", "hello")
+			c.Log().Errorf("%v world", "hello")
 
 			c.Expect(c.test.logs).ToBe(
 				[]string{
@@ -68,8 +72,8 @@ func TestLogger(t *testing.T) {
 		})
 
 		g.T("Multiple logger statements", func(c *Context) {
-			c.Logger.Info("Hello")
-			c.Logger.Error("Cogol")
+			c.Log().Info("Hello")
+			c.Log().Error("Cogol")
 
 			c.Expect(c.test.logs).ToBe(
 				[]string{
@@ -83,6 +87,68 @@ func TestLogger(t *testing.T) {
 						color.HiRedString("\t\tERROR"),
 						"Cogol\n\n",
 					),
+				},
+			)
+		})
+
+		g.AfterEach(func(c *Context) {
+			c.test.logs = []string{}
+		})
+	}
+
+	cgl.Process()
+}
+
+func TestCustomLogger(t *testing.T) {
+	cgl := Init(t)
+	cgl.UseLogger(&CustomLogger{})
+
+	g := cgl.Group("Test custom logger")
+	{
+		g.T("Info", func(c *Context) {
+			c.Log().Info("Hello")
+			c.Expect(c.test.logs).ToBe(
+				[]string{
+					color.HiYellowString("Hello"),
+				},
+			)
+		})
+
+		g.T("Infof", func(c *Context) {
+			c.Log().Infof("Hello %v", "world")
+			c.Expect(c.test.logs).ToBe(
+				[]string{
+					color.HiYellowString("Hello world"),
+				},
+			)
+		})
+
+		g.T("Error", func(c *Context) {
+			c.Log().Info("Hello")
+			c.Expect(c.test.logs).ToBe(
+				[]string{
+					color.HiYellowString("Hello"),
+				},
+			)
+		})
+
+		g.T("Errorf", func(c *Context) {
+			c.Log().Errorf("Hello %v", "world")
+			c.Expect(c.test.logs).ToBe(
+				[]string{
+					color.HiYellowString("Hello world"),
+				},
+			)
+		})
+
+		g.T("Multiple logger statements", func(c *Context) {
+			c.Log().Errorf("Hello %v", "world")
+			c.Log().Info("Hello cogol")
+
+			c.Expect(c.test.logs).ToBe(
+				[]string{
+					color.HiYellowString("Hello world"),
+					color.HiYellowString("Hello cogol"),
 				},
 			)
 		})

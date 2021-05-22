@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestStorage(t *testing.T) {
+func TestLogger(t *testing.T) {
 	cgl := cogol.Init(t)
 
 	g := cgl.Group("Logger")
@@ -17,12 +17,32 @@ func TestStorage(t *testing.T) {
 			//      Infof(format string, args ...interface{}),
 			//      Error(text string),
 			//      Errorf(format string, args ...interface{}).
-			c.Logger.Info("Hello cogol!")
-			c.Logger.Infof("Hello cogol %d!", 2)
+			c.Log().Info("Hello cogol!")
+			c.Log().Infof("Hello cogol %d!", 2)
 		})
 
 		g.T("Another test", func(c *cogol.Context) {
-			c.Logger.Error("Error occured")
+			c.Log().Error("Error occured")
+		})
+	}
+
+	// Don't forget to run the "Process" method!
+	cgl.Process()
+}
+
+func TestCustomLogger(t *testing.T) {
+	cgl := cogol.Init(t)
+	cgl.UseLogger(&cogol.CustomLogger{})
+
+	g := cgl.Group("Custom logger prints everything in yellow color")
+	{
+		g.T("Example usage", func(c *cogol.Context) {
+			c.Log().Info("Hello cogol!")
+			c.Log().Infof("Hello cogol %d!", 2)
+		})
+
+		g.T("Another test", func(c *cogol.Context) {
+			c.Log().Error("Error occured")
 		})
 	}
 

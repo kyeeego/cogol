@@ -7,7 +7,7 @@ import (
 
 type Context struct {
 	Storage   storage
-	Logger    logger
+	logger    Logger
 	test      *test
 	t         *testing.T
 	succeeded chan bool
@@ -16,13 +16,13 @@ type Context struct {
 }
 
 // context creates a new cgl.Context instance
-func (cgl Cogol) context(test *test) *Context {
+func (cgl Cogol) context(test *test, logger Logger) *Context {
 	return &Context{
 		test: test,
 		Storage: &defaultStorage{
 			data: make(map[string]interface{}),
 		},
-		Logger:    newDefaultLogger(test),
+		logger:    logger,
 		succeeded: make(chan bool),
 		failed:    make(chan string),
 		t:         cgl.t,
@@ -40,6 +40,10 @@ func (ctx *Context) Kill(f *failure) {
 	ctx.test.f = f
 	ctx.failed <- fmt.Sprintf("Killed '%v'", ctx.test.name)
 	ctx.killed = true
+}
+
+func (ctx *Context) Log() Logger {
+	return ctx.logger
 }
 
 type storage interface {

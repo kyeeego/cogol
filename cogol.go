@@ -2,6 +2,7 @@ package cogol
 
 import (
 	"os"
+	"reflect"
 	"sync"
 	"testing"
 )
@@ -10,11 +11,12 @@ type Cogol struct {
 	t        *testing.T
 	children []*G
 	reporter Reporter
+	logger   Logger
 }
 
 // Init creates a new Cogol instance from *testing.T taken from Go's typical test function
 func Init(t *testing.T) *Cogol {
-	return &Cogol{t, []*G{}, defaultReporter{}}
+	return &Cogol{t, []*G{}, defaultReporter{}, &defaultLogger{}}
 }
 
 // G is a struct that represents a group of tests
@@ -134,7 +136,13 @@ func (cgl *Cogol) processGroup(g *G) {
 
 	for _, testCase := range g.children {
 		wg.Add(1)
-		c := cgl.context(testCase)
+
+		l := reflect.New(
+			reflect.ValueOf(cgl.logger).Elem().Type(),
+		).Interface().(Logger)
+
+		l.forTest(testCase)
+		c := cgl.context(testCase, l)
 
 		go func(test *test, wg *sync.WaitGroup) {
 			defer wg.Done()
@@ -156,4 +164,8 @@ func (cgl *Cogol) processGroup(g *G) {
 		}(testCase, &wg)
 	}
 	wg.Wait()
+}
+
+func (cgl *Cogol) UseLogger(l Logger) {
+	cgl.logger = l
 }

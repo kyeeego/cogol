@@ -59,4 +59,5 @@ and get the following output
 * [Getting started](./examples/getting_started)
 * [Assertions](./examples/assertions)
 * [Storage](./examples/storage)
+* [Logger](./examples/logger)
 * [Achieving best performance](./examples/performance)
