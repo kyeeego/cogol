@@ -31,12 +31,18 @@ func (cgl Cogol) context(test *test, logger Logger) *Context {
 }
 
 // Kill marks test as failed and stops test's processing
-func (ctx *Context) Kill(f *failure) {
+func (ctx *Context) Kill(message string) {
 	// Can not kill context more than once, so if ctx.Kill() has been called
 	// more than once, we can just ingnore it 'cause test's failed anyway
 	if ctx.killed {
 		return
 	}
+
+	f := &failure{
+		ctx: ctx,
+		msg: message,
+	}
+
 	ctx.test.f = f
 	ctx.failed <- fmt.Sprintf("Killed '%v'", ctx.test.name)
 	ctx.killed = true

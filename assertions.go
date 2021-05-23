@@ -30,8 +30,7 @@ func (ctx *Context) Expect(actual interface{}) *assertion {
 }
 
 func defaultKiller(f *failure) {
-	f.ctx.test.f = f
-	f.ctx.Kill(f)
+	f.ctx.Kill(f.msg)
 }
 
 func (a *assertion) ToBe(expected interface{}) {

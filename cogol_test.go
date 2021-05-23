@@ -108,29 +108,17 @@ func TestContext_Kill(t *testing.T) {
 	g := cgl.Group("Context kill testing")
 	{
 		g.T("Context.Kill should fail the test immediately", func(c *Context) {
-			c.Kill(&failure{
-				ctx: c,
-				msg: "If it failed, then the test is passing",
-			})
+			c.Kill("If it failed, then the test is passing")
 		})
 
 		g.T("ctx.Kill() calls after the first one should be ignored", func(c *Context) {
-			c.Kill(&failure{
-				ctx: c,
-				msg: "If it failed, then the test is passing",
-			})
+			c.Kill("If it failed, then the test is passing")
 
-			c.Kill(&failure{
-				ctx: c,
-				msg: "Should not appear",
-			})
+			c.Kill("Should not appear")
 		})
 
 		g.AfterEach(func(c *Context) {
-			c.Kill(&failure{
-				ctx: c,
-				msg: "Fuck",
-			})
+			c.Kill("Fuck")
 		})
 	}
 
