@@ -27,7 +27,7 @@ func Test(t *testing.T) {
 		// Notice the Context parameter in our handler. It holds all the important data about the test,
 		// and allows you to use assertions. You can learn more about assertions in the corresponding example
 		g.T("Hello cogol!", func(c *cogol.Context) {
-			c.Expect(c.Storage.Get("hello")).ToBe("world")
+			c.Expect(c.Storage().Get("hello")).ToBe("world")
 		})
 
 		// If you have an idea for a test, but don't feel like writing it, or just cannot write it,
@@ -42,7 +42,7 @@ func Test(t *testing.T) {
 		//
 		// Now you can see, why the "Hello cogol!" test is actually passing
 		g.BeforeEach(func(c *cogol.Context) {
-			c.Storage.Set("hello", "world")
+			c.Storage().Set("hello", "world")
 		})
 
 		// With AfterEach method of the group, you can run some code after each test,

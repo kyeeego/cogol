@@ -12,17 +12,23 @@ type Cogol struct {
 	children []*G
 	reporter Reporter
 	logger   Logger
+	storage  Storage
 }
 
 // Init creates a new Cogol instance from *testing.T taken from Go's typical test function
 func Init(t *testing.T) *Cogol {
-	return &Cogol{t, []*G{}, defaultReporter{}, &defaultLogger{}}
+	return &Cogol{
+		t:        t,
+		children: []*G{},
+		reporter: &defaultReporter{},
+		logger:   &defaultLogger{},
+		storage:  newDefaultStorage()}
 }
 
 // G is a struct that represents a group of tests
 type G struct {
 	name       string
-	children   []*test
+	children   []*Test
 	todo       []string
 	beforeEach handler
 	beforeAll  func()
@@ -34,7 +40,7 @@ type G struct {
 
 type handler = func(c *Context)
 
-type test struct {
+type Test struct {
 	name    string
 	handler handler
 	success bool
@@ -102,7 +108,7 @@ func (g *G) calculateSuccess() {
 
 // T creates a typical testcase
 func (g *G) T(name string, handler handler) {
-	t := &test{
+	t := &Test{
 		name: name,
 		handler: func(c *Context) {
 			handler(c)
@@ -141,10 +147,12 @@ func (cgl *Cogol) processGroup(g *G) {
 			reflect.ValueOf(cgl.logger).Elem().Type(),
 		).Interface().(Logger)
 
-		l.forTest(testCase)
-		c := cgl.context(testCase, l)
+		s := cgl.storage.New()
 
-		go func(test *test, wg *sync.WaitGroup) {
+		l.ForTest(testCase)
+		c := cgl.context(testCase, l, s)
+
+		go func(test *Test, wg *sync.WaitGroup) {
 			defer wg.Done()
 
 			g.beforeEach(c)
@@ -168,4 +176,8 @@ func (cgl *Cogol) processGroup(g *G) {
 
 func (cgl *Cogol) UseLogger(l Logger) {
 	cgl.logger = l
+}
+
+func (cgl *Cogol) UseStorage(s Storage) {
+	cgl.storage = s
 }

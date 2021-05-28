@@ -6,9 +6,9 @@ import (
 )
 
 type Context struct {
-	Storage   storage
+	storage   Storage
 	logger    Logger
-	test      *test
+	test      *Test
 	t         *testing.T
 	succeeded chan bool
 	failed    chan string
@@ -16,12 +16,10 @@ type Context struct {
 }
 
 // context creates a new cgl.Context instance
-func (cgl Cogol) context(test *test, logger Logger) *Context {
+func (cgl Cogol) context(test *Test, logger Logger, storage Storage) *Context {
 	return &Context{
-		test: test,
-		Storage: &defaultStorage{
-			data: make(map[string]interface{}),
-		},
+		test:      test,
+		storage:   storage,
 		logger:    logger,
 		succeeded: make(chan bool),
 		failed:    make(chan string),
@@ -52,13 +50,26 @@ func (ctx *Context) Log() Logger {
 	return ctx.logger
 }
 
-type storage interface {
+func (ctx *Context) Storage() Storage {
+	return ctx.storage
+}
+
+type Storage interface {
+	New() Storage
 	Get(key string) interface{}
 	Set(key string, value interface{})
 }
 
 type defaultStorage struct {
 	data map[string]interface{}
+}
+
+func newDefaultStorage() *defaultStorage {
+	return &defaultStorage{map[string]interface{}{}}
+}
+
+func (*defaultStorage) New() Storage {
+	return &defaultStorage{map[string]interface{}{}}
 }
 
 func (s *defaultStorage) Get(key string) interface{} {

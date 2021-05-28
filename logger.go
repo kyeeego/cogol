@@ -6,8 +6,8 @@ import (
 )
 
 type Logger interface {
-	forTest(test *test)
-	currentTest() *test
+	ForTest(test *Test)
+	CurrentTest() *Test
 
 	Info(text string)
 	Infof(format string, args ...interface{})
@@ -16,7 +16,7 @@ type Logger interface {
 }
 
 type defaultLogger struct {
-	test *test
+	test *Test
 }
 
 func (l defaultLogger) Info(text string) {
@@ -41,10 +41,10 @@ func (l defaultLogger) Errorf(format string, a ...interface{}) {
 	l.test.logs = append(l.test.logs, fmt.Sprintf("%v %v\n\n", tag, text))
 }
 
-func (l *defaultLogger) currentTest() *test {
+func (l *defaultLogger) CurrentTest() *Test {
 	return l.test
 }
 
-func (l *defaultLogger) forTest(test *test) {
+func (l *defaultLogger) ForTest(test *Test) {
 	l.test = test
 }

@@ -1,32 +1,35 @@
 package cogol
 
-import "github.com/fatih/color"
+import (
+	"github.com/fatih/color"
+)
 
+// CustomLogger - Example custom logger
 type CustomLogger struct {
-	test *test
+	test *Test
 }
 
-func (c *CustomLogger) forTest(test *test) {
+func (c *CustomLogger) ForTest(test *Test) {
 	c.test = test
 }
 
-func (c *CustomLogger) currentTest() *test {
+func (c *CustomLogger) CurrentTest() *Test {
 	return c.test
 }
 
 func (c CustomLogger) Info(text string) {
-	c.currentTest().logs = append(c.currentTest().logs, color.HiYellowString(text))
+	c.CurrentTest().logs = append(c.CurrentTest().logs, color.HiYellowString(text))
 }
 
 func (c CustomLogger) Infof(format string, args ...interface{}) {
-	c.currentTest().logs = append(c.currentTest().logs, color.HiYellowString(format, args...))
+	c.CurrentTest().logs = append(c.CurrentTest().logs, color.HiYellowString(format, args...))
 }
 
 func (c CustomLogger) Error(text string) {
-	c.currentTest().logs = append(c.currentTest().logs, color.HiYellowString(text))
+	c.CurrentTest().logs = append(c.CurrentTest().logs, color.HiYellowString(text))
 }
 
 func (c CustomLogger) Errorf(format string, args ...interface{}) {
-	c.currentTest().logs = append(c.currentTest().logs, color.HiYellowString(format, args...))
+	c.CurrentTest().logs = append(c.CurrentTest().logs, color.HiYellowString(format, args...))
 }
 
