@@ -13,7 +13,7 @@ const (
 
 type Reporter interface {
 	Group(g *G)
-	Test(test *Test)
+	Test(test *test)
 	Todo(todo string)
 	Error(f *failure)
 	Print(format string, values ...interface{})
@@ -41,7 +41,7 @@ func (r defaultReporter) Group(g *G) {
 	fmt.Println()
 }
 
-func (r defaultReporter) Test(test *Test) {
+func (r defaultReporter) Test(test *test) {
 	if test.success {
 		c := color.HiGreenString("\t%v PASS: %v\n", tick, test.name)
 		fmt.Print(c)

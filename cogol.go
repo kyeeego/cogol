@@ -2,7 +2,6 @@ package cogol
 
 import (
 	"os"
-	"reflect"
 	"sync"
 	"testing"
 )
@@ -28,7 +27,7 @@ func Init(t *testing.T) *Cogol {
 // G is a struct that represents a group of tests
 type G struct {
 	name       string
-	children   []*Test
+	children   []*test
 	todo       []string
 	beforeEach handler
 	beforeAll  func()
@@ -40,7 +39,7 @@ type G struct {
 
 type handler = func(c *Context)
 
-type Test struct {
+type test struct {
 	name    string
 	handler handler
 	success bool
@@ -108,7 +107,7 @@ func (g *G) calculateSuccess() {
 
 // T creates a typical testcase
 func (g *G) T(name string, handler handler) {
-	t := &Test{
+	t := &test{
 		name: name,
 		handler: func(c *Context) {
 			handler(c)
@@ -121,7 +120,7 @@ func (g *G) T(name string, handler handler) {
 }
 
 // TODO adds name of the test to group's to G.todo array, marking test as TODO
-// Does not need a handler
+// Does not require a handler
 func (g *G) TODO(name string) {
 	g.todo = append(g.todo, name)
 }
@@ -136,23 +135,16 @@ func (g *G) AfterEach(h handler) {
 	g.afterEach = h
 }
 
-// process runs all the tests in group
+// processGroup runs all the tests in group
 func (cgl *Cogol) processGroup(g *G) {
 	var wg sync.WaitGroup
 
 	for _, testCase := range g.children {
 		wg.Add(1)
 
-		l := reflect.New(
-			reflect.ValueOf(cgl.logger).Elem().Type(),
-		).Interface().(Logger)
+		c := cgl.context(testCase, newDefaultLogger(testCase), newDefaultStorage())
 
-		s := cgl.storage.New()
-
-		l.ForTest(testCase)
-		c := cgl.context(testCase, l, s)
-
-		go func(test *Test, wg *sync.WaitGroup) {
+		go func(test *test, wg *sync.WaitGroup) {
 			defer wg.Done()
 
 			g.beforeEach(c)
@@ -172,12 +164,4 @@ func (cgl *Cogol) processGroup(g *G) {
 		}(testCase, &wg)
 	}
 	wg.Wait()
-}
-
-func (cgl *Cogol) UseLogger(l Logger) {
-	cgl.logger = l
-}
-
-func (cgl *Cogol) UseStorage(s Storage) {
-	cgl.storage = s
 }

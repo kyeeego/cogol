@@ -40,7 +40,7 @@ func TestStorage(t *testing.T) {
 	cgl.Process()
 }
 
-func Test(t *testing.T) {
+func test(t *testing.T) {
 	cgl := cogol.Init(t)
 	
     g := cgl.Group("Example 2")

@@ -30,22 +30,3 @@ func TestLogger(t *testing.T) {
 	cgl.Process()
 }
 
-func TestCustomLogger(t *testing.T) {
-	cgl := cogol.Init(t)
-	cgl.UseLogger(&cogol.CustomLogger{})
-
-	g := cgl.Group("Custom logger prints everything in yellow color")
-	{
-		g.T("Example usage", func(c *cogol.Context) {
-			c.Log().Info("Hello cogol!")
-			c.Log().Infof("Hello cogol %d!", 2)
-		})
-
-		g.T("Another test", func(c *cogol.Context) {
-			c.Log().Error("Error occured")
-		})
-	}
-
-	// Don't forget to run the "Process" method!
-	cgl.Process()
-}

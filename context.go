@@ -6,32 +6,34 @@ import (
 )
 
 type Context struct {
-	storage   Storage
-	logger    Logger
-	test      *Test
-	t         *testing.T
-	succeeded chan bool
-	failed    chan string
-	killed    bool
+	storage         Storage
+	logger          Logger
+	test            *test
+	t               *testing.T
+	succeeded       chan bool
+	failed          chan string
+	killed          bool
+	assertionKiller func(f *failure)
 }
 
 // context creates a new cgl.Context instance
-func (cgl Cogol) context(test *Test, logger Logger, storage Storage) *Context {
+func (cgl Cogol) context(test *test, logger Logger, storage Storage) *Context {
 	return &Context{
-		test:      test,
-		storage:   storage,
-		logger:    logger,
-		succeeded: make(chan bool),
-		failed:    make(chan string),
-		t:         cgl.t,
-		killed:    false,
+		test:            test,
+		storage:         storage,
+		logger:          logger,
+		succeeded:       make(chan bool),
+		failed:          make(chan string),
+		t:               cgl.t,
+		killed:          false,
+		assertionKiller: defaultKiller,
 	}
 }
 
-// Kill marks test as failed and stops test's processing
+// Kill marks test as failed and stops it's processing
 func (ctx *Context) Kill(message string) {
 	// Can not kill context more than once, so if ctx.Kill() has been called
-	// more than once, we can just ingnore it 'cause test's failed anyway
+	// more than once, we can just ignore it since the test has failed anyway
 	if ctx.killed {
 		return
 	}
@@ -55,7 +57,6 @@ func (ctx *Context) Storage() Storage {
 }
 
 type Storage interface {
-	New() Storage
 	Get(key string) interface{}
 	Set(key string, value interface{})
 }
@@ -65,10 +66,6 @@ type defaultStorage struct {
 }
 
 func newDefaultStorage() *defaultStorage {
-	return &defaultStorage{map[string]interface{}{}}
-}
-
-func (*defaultStorage) New() Storage {
 	return &defaultStorage{map[string]interface{}{}}
 }
 

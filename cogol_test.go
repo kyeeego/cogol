@@ -12,7 +12,7 @@ func TestStuff(t *testing.T) {
 
 	public := 0
 
-	g := cgl.Group("Test runability")
+	g := cgl.Group("test runability")
 	{
 		g.TODO("todo 1")
 		g.TODO("todo 2")

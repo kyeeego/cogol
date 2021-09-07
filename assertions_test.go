@@ -83,6 +83,6 @@ func TestAssertion(t *testing.T) {
 
 func verify(ctx *Context, shouldBeSuccessful bool) {
 	if ctx.test.success != shouldBeSuccessful {
-		ctx.Kill(fmt.Sprintf("Test successfullness was supposed to be %v", shouldBeSuccessful))
+		ctx.Kill(fmt.Sprintf("test successfullness was supposed to be %v", shouldBeSuccessful))
 	}
 }

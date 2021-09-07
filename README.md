@@ -32,7 +32,7 @@ import (
 func TestSomething(t *testing.T) {
 	cgl := cogol.Init(t)
 
-	g := cgl.Group("Test")
+	g := cgl.Group("test")
 	{
 		g.T("Adds two numbers", func(c *cogol.Context) {
 			c.Expect(2 + 2).ToBe(4)
