@@ -8,7 +8,7 @@ import (
 
 type Cogol struct {
 	t        *testing.T
-	children []*G
+	children []*group
 	reporter Reporter
 	logger   Logger
 	storage  Storage
@@ -18,14 +18,14 @@ type Cogol struct {
 func Init(t *testing.T) *Cogol {
 	return &Cogol{
 		t:        t,
-		children: []*G{},
+		children: []*group{},
 		reporter: &defaultReporter{},
 		logger:   &defaultLogger{},
 		storage:  newDefaultStorage()}
 }
 
-// G is a struct that represents a group of tests
-type G struct {
+// group is a struct that represents a group of tests
+type group struct {
 	name       string
 	children   []*test
 	todo       []string
@@ -48,8 +48,8 @@ type test struct {
 }
 
 // Group is a function that creates a new group (G instance)
-func (cgl *Cogol) Group(name string) *G {
-	g := &G{
+func (cgl *Cogol) Group(name string) *group {
+	g := &group{
 		name: name,
 		t:    cgl.t,
 
@@ -73,7 +73,7 @@ func (cgl *Cogol) Process() {
 
 	for _, g := range cgl.children {
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, g *G) {
+		go func(wg *sync.WaitGroup, g *group) {
 			defer wg.Done()
 
 			cgl.processGroup(g)
@@ -95,7 +95,7 @@ func (cgl *Cogol) Process() {
 }
 
 // calculateSuccess is a simple algorithm to check whether all tests in a group have passed
-func (g *G) calculateSuccess() {
+func (g *group) calculateSuccess() {
 	for _, test := range g.children {
 		if !test.success {
 			g.success = false
@@ -106,7 +106,7 @@ func (g *G) calculateSuccess() {
 }
 
 // T creates a typical testcase
-func (g *G) T(name string, handler handler) {
+func (g *group) T(name string, handler handler) {
 	t := &test{
 		name: name,
 		handler: func(c *Context) {
@@ -121,22 +121,22 @@ func (g *G) T(name string, handler handler) {
 
 // TODO adds name of the test to group's to G.todo array, marking test as TODO
 // Does not require a handler
-func (g *G) TODO(name string) {
+func (g *group) TODO(name string) {
 	g.todo = append(g.todo, name)
 }
 
 // BeforeEach sets handler that has to be executed before each test
-func (g *G) BeforeEach(h handler) {
+func (g *group) BeforeEach(h handler) {
 	g.beforeEach = h
 }
 
 // AfterEach sets handler that has to be executed after each test
-func (g *G) AfterEach(h handler) {
+func (g *group) AfterEach(h handler) {
 	g.afterEach = h
 }
 
 // processGroup runs all the tests in group
-func (cgl *Cogol) processGroup(g *G) {
+func (cgl *Cogol) processGroup(g *group) {
 	var wg sync.WaitGroup
 
 	for _, testCase := range g.children {

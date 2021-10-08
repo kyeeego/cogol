@@ -50,7 +50,7 @@ func TestStuff(t *testing.T) {
 
 	cgl.Process()
 
-	// All tests should be ran
+	// All tests should be run
 	if public != 3 {
 		t.Fail()
 	}
@@ -118,7 +118,7 @@ func TestContext_Kill(t *testing.T) {
 		})
 
 		g.AfterEach(func(c *Context) {
-			c.Kill("Fuck")
+			c.Kill("Should not appear")
 		})
 	}
 

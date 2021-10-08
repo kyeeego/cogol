@@ -12,7 +12,7 @@ const (
 )
 
 type Reporter interface {
-	Group(g *G)
+	Group(g *group)
 	Test(test *test)
 	Todo(todo string)
 	Error(f *failure)
@@ -21,7 +21,7 @@ type Reporter interface {
 
 type defaultReporter struct{}
 
-func (r defaultReporter) Group(g *G) {
+func (r defaultReporter) Group(g *group) {
 	clr := color.New(color.FgBlack)
 
 	printHeader(*clr, g.success, g.name)
